@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>longcat-three.js</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="../Three.js"></script>
+<script type="text/javascript" src="../streetview-frameup.js"></script>
+<script type="text/javascript">
+$(function () {
+  var renderer = new THREE.CanvasRenderer();
+  var scene = new THREE.Scene();
+  var frameup = new StreetviewFrameup(renderer, scene);
+  
+  var panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
+    position:new google.maps.LatLng(40.757364, -73.985984),
+    pov:{ heading:-10, pitch:-5, zoom:1 },
+    linksControl:false
+  });
+  frameup.bind(panorama);
+  
+  var img = new Image();
+  img.src = 'images/longcat.png';
+  img.onload = function () {
+    var texture = new THREE.Texture(this);
+    texture.needsUpdate = true;
+    var material = new THREE.MeshBasicMaterial({ color:0xFF0000, map:texture });
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(300, 584, 5), material);
+    plane.position.z = -800;
+    plane.overdraw = true;
+    scene.add(plane);
+    frameup.redraw();
+  };
+});
+</script>
+</head>
+<body>
+
+<div id="panorama" style="width:800px;height:600px;"></div>
+
+</body>
+</html>
+
